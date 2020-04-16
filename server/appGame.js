@@ -18,12 +18,12 @@ io.on('connection', function(socket){
   console.log('someone connected')
     socket.on('msgAttack', function(msg){
       console.log(msg, "attack")
-      //io.emit('msgAttack', msg) //ke semua
-      socket.broadcast.emit('msgAttack', msg) //ke semua kecuali diri sendiri
+      io.emit('msgAttack', msg) //ke semua
+      //socket.broadcast.emit('msgAttack', msg) //ke semua kecuali diri sendiri
      });
     socket.on('msgDefense', function(msg){
       console.log(msg, "defense")
-      //io.emit('msgDefense', msg) //ke semua
-      socket.broadcast.emit('msgDefense', msg) //ke semua kecuali diri sendiri
+      io.emit('msgDefense', msg) //ke semua
+      //socket.broadcast.emit('msgDefense', msg) //ke semua kecuali diri sendiri
      });
   });

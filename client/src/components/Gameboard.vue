@@ -4,18 +4,18 @@
     <div class="arena">
         <div>
             <h3>Player 1</h3>
-            <div class="modeAttack">{{attack1}}</div>
-            <div class="modeDefense">{{defense1}}</div>
+            <div class="modeAttack">Attack1: {{attack1}}</div>
+            <div class="modeDefense">Defense1: {{defense1}}</div>
             <div class="avatar">Icon1</div>
-            <div class="power">{{power1}}</div>
+            <div class="power">Power1: {{power1}}</div>
         </div>
         <div class="winnerwarning"></div>
         <div>
             <h3>Player 2</h3>
-            <div class="modeAttack">{{attack2}}</div>
-            <div class="modeDefense">{{defense2}}</div>
+            <div class="modeAttack">Attack2: {{attack2}}</div>
+            <div class="modeDefense">Defense2: {{defense2}}</div>
             <div class="avatar">Icon2</div>
-            <div class="power">{{power2}}</div>
+            <div class="power">Power2: {{power2}}</div>
         </div>
     </div>
     <div class="privateScreen">
@@ -46,6 +46,7 @@
 
 <script>
 import io from 'socket.io-client';
+const fighting = require('../assets/fighting')
 const socket = io('http://localhost:3000');//jangan lupa diganti saat deploy
 export default {
   data(){
@@ -70,9 +71,10 @@ export default {
           console.log(attack, "......attack")
           if(attack.player === 'player1'){
               this.attack1 = attack.elementAttack
-              
+              this.power2 =this.power2- fighting(this.defense2, this.attack1)
           } else {
               this.attack2 = attack.elementAttack
+              this.power1 =this.power1- fighting(this.defense1, this.attack2)
           }
       })
       socket.on('msgDefense', function(defense){
@@ -105,9 +107,9 @@ export default {
         event.preventDefault();
         //mengisi desfense sendiri
         if(this.player === 'player1'){
-            defense1 = this.elementDefense
+            this.defense1 = this.elementDefense
         } else {
-            defense2 = this.elementDefense
+            this.defense2 = this.elementDefense
         }
         //menyiapkan msg untuk socket
         this.msgDefense = {
