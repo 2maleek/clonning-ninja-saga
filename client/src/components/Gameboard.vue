@@ -47,7 +47,7 @@
 <script>
 import io from 'socket.io-client';
 const fighting = require('../assets/fighting')
-let socket//jangan lupa diganti saat deploy
+let socket = io.connect('http://localhost:3000')//jangan lupa diganti saat deploy
 export default {
   data(){
     return {
@@ -66,60 +66,80 @@ export default {
   },
   created: function(){
       console.log('created detected')
-      socket = io('http://localhost:3000')
-      socket.on('msgAttack', function(attack){
+      //socket = io('http://localhost:3000')
+      socket.on('msgAttack', (attack)=>{
           console.log(attack, "......attack")
-          if(attack.player === 'player1'){
-              this.attack1 = attack.elementAttack
-              this.power2 =this.power2- fighting(this.defense2, this.attack1)
-          } else {
-              this.attack2 = attack.elementAttack
-              this.power1 =this.power1- fighting(this.defense1, this.attack2)
-          }
+          this.attackArena(attack)
       })
-      socket.on('msgDefense', function(defense){
+      socket.on('msgDefense', (defense)=>{
           console.log(defense, "....defense")
-          if(defense.player === 'player1'){
-              this.defense1 = defense.elementDefense
-          } else {
-              this.defense2 = defense.elementDefense
-          }
+          this.fungsi()
+          this.defenseArena(defense)
       })
   },
   methods:{
+    fungsi(){
+        console.log('fungsi')
+    },
+    attackArena(attack){
+        if(attack.player === 'player1'){
+              this.attack1 = attack.elementAttack
+              console.log(this.attack1, "......attack1")
+              this.power2 =this.power2- fighting(this.defense2, this.attack1)
+              console.log(this.power2, "......power2")
+          } else {
+              this.attack2 = attack.elementAttack
+              console.log(this.attack2, "......attack2")
+              this.power1 =this.power1- fighting(this.defense1, this.attack2)
+              console.log(this.power1, "......power1")
+          }
+    },
+    defenseArena(defense){
+        if(defense.player === 'player1'){
+              console.log(defense.elementDefense,'pl1-defense')
+              this.defense1 = defense.elementDefense
+              console.log(this.defense1, 'defense1-----')
+          } else {
+              console.log('pl2-defense')
+              this.defense2 = defense.elementDefense
+              console.log(this.defense2, 'defense2-----')
+          }
+    },
     sendAttack (event){
         event.preventDefault();
+        this.fungsi()
         //mengisi attack sendiri
-        if(this.player === 'player1'){
-            this.attack1 = this.elementAttack
-        } else {
-            this.attack2 = this.elementAttack
-        }
+        // if(this.player === 'player1'){
+        //     this.attack1 = this.elementAttack
+        // } else {
+        //     this.attack2 = this.elementAttack
+        // }
         //menyiapkan message untuk socket
         this.msgAttack = {
             player: this.player,
             elementAttack: this.elementAttack
         }
-        console.log(this.msgAttack)
+        console.log(this.msgAttack, '----msgAttack')
         socket.emit('msgAttack', this.msgAttack) //kirim ke socket elementAttack
     },
     sendDefense (event){
         event.preventDefault();
+        this.fungsi()
         //mengisi desfense sendiri
-        if(this.player === 'player1'){
-            this.defense1 = this.elementDefense
-        } else {
-            this.defense2 = this.elementDefense
-        }
+        // if(this.player === 'player1'){
+        //     this.defense1 = this.elementDefense
+        // } else {
+        //     this.defense2 = this.elementDefense
+        // }
         //menyiapkan msg untuk socket
         this.msgDefense = {
             player: this.player,
             elementDefense: this.elementDefense
         }
-        console.log(this.msgDefense)
+        console.log(this.msgDefense,'----msgdefense')
         socket.emit('msgDefense', this.msgDefense) //kirim ke socket elementDefense
     }
-  },
+  }
 };
 
 </script>
