@@ -1,38 +1,50 @@
 <template>
   <div>
     <h1>TITLE: "CLONNING NINJA SAGA</h1>
+    <div>You are : {{player}}</div>
     <div class="arena">
         <div>
             <h3>Player 1</h3>
-            <div class="modeAttack">Attack1: {{attack1}}</div>
-            <div class="modeDefense">Defense1: {{defense1}}</div>
+            <div class="modeAttack" v-if="showOne">Attack1: {{attack1}} $$$$$===</div>
+            <div class="modeDefense" v-if="showTwo">Defense1: {{defense1}}</div>
             <div class="avatar">Icon1</div>
             <div class="power">Power1: {{power1}}</div>
+               (only for checking) Attack1: {{attack1}}
+               (only for checking)Defense1: {{defense1}}
         </div>
         <div class="winnerwarning"></div>
         <div>
             <h3>Player 2</h3>
-            <div class="modeAttack">Attack2: {{attack2}}</div>
-            <div class="modeDefense">Defense2: {{defense2}}</div>
+            <div class="modeAttack" v-if="showTwo"> ====$$$$ {{attack2}}</div>
+            <div class="modeDefense" v-if="showOne">{{defense2}}</div>
+                
             <div class="avatar">Icon2</div>
             <div class="power">Power2: {{power2}}</div>
+               (only for checking) Attack2: {{attack2}}
+               (only for checking)Defense2: {{defense2}}
         </div>
     </div>
     <div class="privateScreen">
         <h3>My Screen</h3>
         <div class="warningReady"></div>
-        <div class="chooseAttack">
+        <form v-if="choosePlayer">
+            <label>Choose Player:</label>
+            <select v-model="player">
+                <option>player1</option>
+                <option>player2</option>
+            </select>
+             <button @click="sendPlayer">Submit</button>
+        </form>
+        <div class="chooseAttack" v-if="attackShow">
             <form>
-                <input type="text" v-model="player">
                 <input type="radio" value="fire" v-model="elementAttack"><label>Fire</label>
                 <input type="radio" value="water" v-model="elementAttack"><label>Water</label>
                 <input type="radio" value="soil" v-model="elementAttack"><label>Soil</label>
                 <button @click="sendAttack">Attack</button>
             </form>
         </div>
-        <div class="chooseDefense">
+        <div class="chooseDefense" v-if="defenseShow">
             <form>
-                <input type="text" v-model="player">
                 <input type="radio" value="fire" v-model="elementDefense"><label>Fire</label>
                 <input type="radio" value="water" v-model="elementDefense"><label>Water</label>
                 <input type="radio" value="soil" v-model="elementDefense"><label>Soil</label>
@@ -62,6 +74,11 @@ export default {
         elementDefense: '',
         msgAttack : null,
         msgDefense : null,
+        defenseShow: false,
+        attackShow: false,
+        choosePlayer: true,
+        showOne: false,
+        showTwo: false
     }
   },
   created: function(){
@@ -73,21 +90,37 @@ export default {
       })
       socket.on('msgDefense', (defense)=>{
           console.log(defense, "....defense")
-          this.fungsi()
           this.defenseArena(defense)
+      })
+      socket.on('msgPlayer', (play)=>{
+          console.log(play, "....player dari lawan")
+          console.log(this.player)
+          this.choosePlayer = false
+          if(play==='player1'){
+              this.player='player2'
+              this.defenseShow = true
+          } else {
+              this.player='player1'
+          }
       })
   },
   methods:{
-    fungsi(){
-        console.log('fungsi')
-    },
+    
     attackArena(attack){
         if(attack.player === 'player1'){
+            if(this.player === 'player1'){
+                this.showOne = true
+                this.defenseShow = true //step3 giliran player1 siapkan defense
+            }
               this.attack1 = attack.elementAttack
               console.log(this.attack1, "......attack1")
               this.power2 =this.power2- fighting(this.defense2, this.attack1)
               console.log(this.power2, "......power2")
           } else {
+            if(this.player === 'player2'){
+                this.showTwo = true
+                this.defenseShow = true //one cycle - mulai step1
+            }
               this.attack2 = attack.elementAttack
               console.log(this.attack2, "......attack2")
               this.power1 =this.power1- fighting(this.defense1, this.attack2)
@@ -96,10 +129,16 @@ export default {
     },
     defenseArena(defense){
         if(defense.player === 'player1'){
+            if(this.player==='player2'){
+                this.attackShow = true //step4 player2 attack
+            }
               console.log(defense.elementDefense,'pl1-defense')
               this.defense1 = defense.elementDefense
               console.log(this.defense1, 'defense1-----')
           } else {
+            if(this.player==='player1'){
+                this.attackShow = true //step2 player1 attack
+            }
               console.log('pl2-defense')
               this.defense2 = defense.elementDefense
               console.log(this.defense2, 'defense2-----')
@@ -107,7 +146,7 @@ export default {
     },
     sendAttack (event){
         event.preventDefault();
-        this.fungsi()
+        this.attackShow = false
         //mengisi attack sendiri
         // if(this.player === 'player1'){
         //     this.attack1 = this.elementAttack
@@ -124,7 +163,9 @@ export default {
     },
     sendDefense (event){
         event.preventDefault();
-        this.fungsi()
+        this.defenseShow = false
+        this.showOne = false
+        this.showTwo = false
         //mengisi desfense sendiri
         // if(this.player === 'player1'){
         //     this.defense1 = this.elementDefense
@@ -138,7 +179,17 @@ export default {
         }
         console.log(this.msgDefense,'----msgdefense')
         socket.emit('msgDefense', this.msgDefense) //kirim ke socket elementDefense
-    }
+    },
+    sendPlayer(event){
+        event.preventDefault()
+        console.log('sendplayer')
+        console.log(this.player)
+        this.choosePlayer = false
+        if(this.player==='player2'){
+            this.defenseShow = true // step1 player2 siapkan defense
+        }
+        socket.emit('msgPlayer', this.player) //kirim ke socket player
+    },
   }
 };
 

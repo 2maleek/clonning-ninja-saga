@@ -16,6 +16,10 @@ let server = app.listen(port, () => console.log('listening on port: ', port))
 var io = socket(server)
 io.on('connection', function(socket){
   console.log('someone connected')
+    socket.on('msgPlayer', function(msg){
+        console.log(msg,"...player")
+        socket.broadcast.emit('msgPlayer', msg)
+    });
     socket.on('msgAttack', function(msg){
       console.log(msg, "attack")
       io.emit('msgAttack', msg) //ke semua
