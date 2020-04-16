@@ -9,10 +9,13 @@
             <div class="modeDefense" v-if="showTwo">Defense1: {{defense1}}</div>
             <div class="avatar">Icon1</div>
             <div class="power">Power1: {{power1}}</div>
-               (only for checking) Attack1: {{attack1}}
+               (only for checking) Attack1: {{attack1}}<br>
                (only for checking)Defense1: {{defense1}}
         </div>
-        <div class="winnerwarning"></div>
+        <div class="winnerwarning" v-if="winnerShow">
+                <h3>{{winner}} is the WINNER</h3>
+                <button @click="playagain">Play Again?</button>
+        </div>
         <div>
             <h3>Player 2</h3>
             <div class="modeAttack" v-if="showTwo"> ====$$$$ {{attack2}}</div>
@@ -20,7 +23,7 @@
                 
             <div class="avatar">Icon2</div>
             <div class="power">Power2: {{power2}}</div>
-               (only for checking) Attack2: {{attack2}}
+               (only for checking) Attack2: {{attack2}}<br>
                (only for checking)Defense2: {{defense2}}
         </div>
     </div>
@@ -78,7 +81,9 @@ export default {
         attackShow: false,
         choosePlayer: true,
         showOne: false,
-        showTwo: false
+        showTwo: false,
+        winner: '',
+        winnerShow: false,
     }
   },
   created: function(){
@@ -106,6 +111,10 @@ export default {
   },
   methods:{
     
+    showWinner(winner){
+        this.winner = winner
+        this.winnerShow = true
+    },
     attackArena(attack){
         if(attack.player === 'player1'){
             if(this.player === 'player1'){
@@ -116,8 +125,11 @@ export default {
               console.log(this.attack1, "......attack1")
               this.power2 =this.power2- fighting(this.defense2, this.attack1)
               console.log(this.power2, "......power2")
+              if(this.power2<=0){
+                  this.showWinner('player1')
+              }
           } else {
-            if(this.player === 'player2'){
+             if(this.player === 'player2'){
                 this.showTwo = true
                 this.defenseShow = true //one cycle - mulai step1
             }
@@ -125,6 +137,9 @@ export default {
               console.log(this.attack2, "......attack2")
               this.power1 =this.power1- fighting(this.defense1, this.attack2)
               console.log(this.power1, "......power1")
+              if(this.power1<=0){
+                  this.showWinner('player2')
+              }
           }
     },
     defenseArena(defense){
@@ -189,6 +204,12 @@ export default {
             this.defenseShow = true // step1 player2 siapkan defense
         }
         socket.emit('msgPlayer', this.player) //kirim ke socket player
+    },
+    playagain(){
+        this.power1=100
+        this.power2=100
+        this.winnerShow = false
+        this.choosePlayer = true
     },
   }
 };
