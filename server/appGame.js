@@ -30,4 +30,8 @@ io.on('connection', function(socket){
       io.emit('msgDefense', msg) //ke semua
       //socket.broadcast.emit('msgDefense', msg) //ke semua kecuali diri sendiri
      });
+    socket.on('msgReset', function(msg){
+        console.log(msg, "...reset")
+        io.emit('msgReset',msg)
+    })
   });

@@ -5,9 +5,11 @@
     <div class="arena">
         <div>
             <h3>Player 1</h3>
-            <div class="modeAttack" v-if="showOne">Attack1: {{attack1}} $$$$$===</div>
-            <div class="modeDefense" v-if="showTwo">Defense1: {{defense1}}</div>
-            <div class="avatar">Icon1</div>
+            <div class="modeAttack" v-if="showOne">{{attack1}} $$$$$===</div>
+            <div class="modeDefense" v-if="showTwo">{{defense1}}</div>
+            <div class="avatar">
+                <img src="../assets/pl1.png">
+            </div>
             <div class="power">Power1: {{power1}}</div>
                (only for checking) Attack1: {{attack1}}<br>
                (only for checking)Defense1: {{defense1}}
@@ -21,7 +23,9 @@
             <div class="modeAttack" v-if="showTwo"> ====$$$$ {{attack2}}</div>
             <div class="modeDefense" v-if="showOne">{{defense2}}</div>
                 
-            <div class="avatar">Icon2</div>
+            <div class="avatar">
+                <img src="../assets/pl2.png">
+            </div>
             <div class="power">Power2: {{power2}}</div>
                (only for checking) Attack2: {{attack2}}<br>
                (only for checking)Defense2: {{defense2}}
@@ -89,6 +93,10 @@ export default {
   created: function(){
       console.log('created detected')
       //socket = io('http://localhost:3000')
+      socket.on('msgReset', (reset)=>{
+          console.log('reset')
+          this.initial()
+      })
       socket.on('msgAttack', (attack)=>{
           console.log(attack, "......attack")
           this.attackArena(attack)
@@ -110,7 +118,16 @@ export default {
       })
   },
   methods:{
-    
+    initial(){
+        this.power1=100
+        this.power2=100
+        this.winnerShow = false
+        this.choosePlayer = true
+        this.player=''
+        this.showOne =false
+        this.showTwo = false
+        this.defenseShow = false
+    },
     showWinner(winner){
         this.winner = winner
         this.winnerShow = true
@@ -206,10 +223,7 @@ export default {
         socket.emit('msgPlayer', this.player) //kirim ke socket player
     },
     playagain(){
-        this.power1=100
-        this.power2=100
-        this.winnerShow = false
-        this.choosePlayer = true
+        socket.emit('msgReset', true)//kirim ke socket 
     },
   }
 };
