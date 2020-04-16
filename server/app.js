@@ -14,6 +14,7 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
         if(socket.room) {
             delete socket.room.players[socket.id];
+            socket.leave(`room-${socket.room.id}`);
             socket.to(`room-${socket.room.id}`).emit('other player leave room', {
                 name: socket.name
             });
@@ -27,6 +28,10 @@ io.on('connection', (socket) => {
             name: socket.name,
             message: `set name successful`
         });
+        if(socket.room) {
+            socket.room.players[socket.id].name = name;
+            updateRoomData(socket.room);
+        }
     });
 
     socket.on('get rooms', () => {
@@ -45,16 +50,18 @@ io.on('connection', (socket) => {
 
     socket.on('create room', (name) => {
         let roomId = createNewRoom(name, socket.id);
+        console.log('room created with name: ' + name);
         joinRoom(socket, roomId);
-        console.log('room create');
     });
 
     socket.on('leave room', (id) => {
         if(socket.room) {
             delete socket.room.players[socket.id];
+            socket.leave(`room-${socket.room.id}`);
             socket.to(`room-${socket.room.id}`).emit('other player leave room', {
                 name: socket.name
             });
+            updateRoomData(socket.room);
             socket.emit('leave room', {
                 success: true,
                 message: `leave room successful`
@@ -80,7 +87,6 @@ io.on('connection', (socket) => {
 
 function joinRoom(socket, roomId) {
     if(!socket.room) {
-        console.log('join room');
         let foundRoom = null;
         for(const room of rooms) {
             if(room.id === Number(roomId)) {
@@ -92,7 +98,9 @@ function joinRoom(socket, roomId) {
             if (Object.keys(foundRoom.players).length < 2) {
                 socket.room = foundRoom;
                 socket.join(`room-${socket.room.id}`);
-                foundRoom.players[socket.id] = {};
+                foundRoom.players[socket.id] = {
+                    name: socket.name
+                };
                 socket.to(`room-${socket.room.id}`).emit('other player join room', {
                     name: socket.name
                 });
@@ -100,7 +108,9 @@ function joinRoom(socket, roomId) {
                     success: true,
                     room: socket.room,
                     message: 'join room successful'
-                })
+                })                
+                console.log(`${socket.name} joined room ${socket.room.name}`);
+                updateRoomData(socket.room);
             } else {
                 socket.emit('join room', {
                     success: false,
@@ -127,7 +137,7 @@ function createNewRoom(name, gameMasterSocketId) {
         id: newRoomId,
         name: name,
         gameMaster: gameMasterSocketId,
-        players: []
+        players: {}
     };
     rooms.push(newRoomData);
     io.emit('new room', {
@@ -143,6 +153,12 @@ function getLastRoomId() {
     } else {
         return 1;
     }
+}
+
+function updateRoomData(room) {
+    let {id, name, players} = room;
+    let viewableRoomData = {id, name, players};
+    io.to(`room-${id}`).emit('update room data', viewableRoomData);
 }
 
 server.listen(port, () => console.log(`Server listening on port ${port}`));

@@ -9,13 +9,21 @@
       <button type="submit">Add</button>
     </form>
     <div class="div">
-      rooms:
+      Rooms:
       <div v-for="room in roomList" :key="room.id">
         {{room.name}}
         <button @click.prevent="joinRoom(room.id)">Join</button>
       </div>
     </div>
-    <button v-if="currentRoom" @click="leaveRoom">Leave Room</button>
+    <div v-if="currentRoom">
+      Player List:
+      <ul>
+        <li v-for="(player, playerId, index) in currentRoom.players" :key="index">
+          {{player.name}}
+        </li>
+      </ul>
+      <button @click="leaveRoom">Leave Room</button>
+    </div>
   </div>
 </template>
 
@@ -34,6 +42,9 @@ export default {
   sockets: {
     connect() {
       this.$socket.emit("get rooms")
+    },
+    "update room data"(room) {
+      this.currentRoom = room
     },
     "set name"(data) {
       console.log(data)
@@ -55,9 +66,6 @@ export default {
     },
     "join room"(data) {
       console.log(data)
-      if (data.success) {
-        this.currentRoom = data.room
-      }
     },
     "leave room"(data) {
       console.log(data)
