@@ -10,9 +10,14 @@
             <div class="avatar">
                 <img src="../assets/pl1.png">
             </div>
-            <div class="power">Power1: {{power1}}</div>
-               (only for checking) Attack1: {{attack1}}<br>
-               (only for checking)Defense1: {{defense1}}
+            <div class="power1">Power1: {{power1}}
+                <div v-bind:style="{width: power1+'%'}"></div>
+            </div>
+            <div>
+                (only for checking) Attack1: {{attack1}}<br>
+                (only for checking)Defense1: {{defense1}}
+            </div>
+               
         </div>
         <div class="winnerwarning" v-if="winnerShow">
                 <h3>{{winner}} is the WINNER</h3>
@@ -26,9 +31,13 @@
             <div class="avatar">
                 <img src="../assets/pl2.png">
             </div>
-            <div class="power">Power2: {{power2}}</div>
+            <div class="power2">Power2: {{power2}}
+                <div v-bind:style="{width: power2+'%'}"></div>
+            </div>
+            <div>
                (only for checking) Attack2: {{attack2}}<br>
                (only for checking)Defense2: {{defense2}}
+            </div>
         </div>
     </div>
     <div class="privateScreen">
@@ -143,6 +152,7 @@ export default {
               this.power2 =this.power2- fighting(this.defense2, this.attack1)
               console.log(this.power2, "......power2")
               if(this.power2<=0){
+                  this.power2=0
                   this.showWinner('player1')
               }
           } else {
@@ -155,6 +165,7 @@ export default {
               this.power1 =this.power1- fighting(this.defense1, this.attack2)
               console.log(this.power1, "......power1")
               if(this.power1<=0){
+                  this.power1=0
                   this.showWinner('player2')
               }
           }
@@ -236,5 +247,27 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+.power1{
+    width: 200px;
+    border: 2px solid; 
+    margin: 0 auto 20px auto 
+}
+
+.power1 div{
+    height: 20px;
+    background: red
+}
+
+.power2{
+    width: 200px;
+    border: 2px solid; 
+    margin: 0 auto 20px auto 
+}
+
+.power2 div{
+    height: 20px;
+    background: red
 }
 </style>
