@@ -47,7 +47,7 @@
 <script>
 import io from 'socket.io-client';
 const fighting = require('../assets/fighting')
-const socket = io('http://localhost:3000');//jangan lupa diganti saat deploy
+let socket//jangan lupa diganti saat deploy
 export default {
   data(){
     return {
@@ -66,7 +66,7 @@ export default {
   },
   created: function(){
       console.log('created detected')
-      socket = io()
+      socket = io('http://localhost:3000')
       socket.on('msgAttack', function(attack){
           console.log(attack, "......attack")
           if(attack.player === 'player1'){
