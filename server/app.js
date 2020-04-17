@@ -18,6 +18,8 @@ io.on('connection', (socket) => {
             socket.to(`room-${socket.room.id}`).emit('other player leave room', {
                 name: socket.name
             });
+            updateGameMaster(socket.room);
+            checkRoomEmpty(socket.room);
         }
     });
 
@@ -66,6 +68,8 @@ io.on('connection', (socket) => {
                 success: true,
                 message: `leave room successful`
             });
+            updateGameMaster(socket.room);
+            checkRoomEmpty(socket.room);
             socket.room = null;
         } else {
             socket.emit('leave room', {
@@ -159,6 +163,31 @@ function updateRoomData(room) {
     let {id, name, players} = room;
     let viewableRoomData = {id, name, players};
     io.to(`room-${id}`).emit('update room data', viewableRoomData);
+}
+
+function checkRoomEmpty(checkRoom) {
+    if(Object.keys(checkRoom.players).length <= 0) {
+        io.emit('delete room', {
+            id: checkRoom.id,
+            name: checkRoom.name
+        });
+        rooms = rooms.filter(room => room.id !== checkRoom.id);
+    }
+}
+
+function updateGameMaster(checkRoom) {
+    if(checkRoom) {
+        let gameMasterStillExists = false;
+        for(playerId in checkRoom.players) {
+            if(checkRoom.gameMaster === playerId) {
+                gameMasterStillExists = true;
+                break;
+            }
+        }
+        if(!gameMasterStillExists) {
+            checkRoom.gameMaster = Object.keys(checkRoom.players).length ? Object.keys(checkRoom.players)[0] : null;
+        }
+    }
 }
 
 server.listen(port, () => console.log(`Server listening on port ${port}`));
