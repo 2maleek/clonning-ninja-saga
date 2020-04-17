@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h1>TITLE: "CLONNING NINJA SAGA</h1>
-    <div>You are : {{player}}</div>
+    <h1>"CLONING NINJA SAGA"</h1>
     <div class="arena">
         <div>
             <h3>Player 1</h3>
-            <div class="modeAttack" v-if="showOne">{{attack1}} $$$$$===</div>
-            <div class="modeDefense" v-if="showTwo">{{defense1}}</div>
-            <div class="avatar">
-                <img src="../assets/pl1.png">
+            <div class="fightarena">
+                <div class="avatar"></div>
+                    <img src="../assets/player1.gif" />
+                <div class="modeAttack" v-if="showOne">{{attack1}} </div>
+                <div class="modeDefense" v-if="showTwo">{{defense1}}</div>
             </div>
             <div class="power1">Power1: {{power1}}
                 <div v-bind:style="{width: power1+'%'}"></div>
@@ -21,15 +21,20 @@
         </div>
         <div class="winnerwarning" v-if="winnerShow">
                 <h3>{{winner}} is the WINNER</h3>
-                <button @click="playagain">Play Again?</button>
+                <button @click="playagain">Reset</button>
+        </div>
+        <div class="attackicon">
+            <div v-if="showOne"><img src="../assets/showOne.gif" /></div>
+            <div v-if="showTwo"><img src="../assets/showTwo.gif" /></div>
         </div>
         <div>
             <h3>Player 2</h3>
-            <div class="modeAttack" v-if="showTwo"> ====$$$$ {{attack2}}</div>
-            <div class="modeDefense" v-if="showOne">{{defense2}}</div>
-                
-            <div class="avatar">
-                <img src="../assets/pl2.png">
+            <div class="fightarena">
+                <div class="modeAttack" v-if="showTwo"> {{attack2}}</div>
+                <div class="modeDefense" v-if="showOne">{{defense2}}</div>               
+                <div class="avatar">
+                    <img src="../assets/player2.gif" />
+                </div>
             </div>
             <div class="power2">Power2: {{power2}}
                 <div v-bind:style="{width: power2+'%'}"></div>
@@ -42,6 +47,7 @@
     </div>
     <div class="privateScreen">
         <h3>My Screen</h3>
+        <h4>You are : {{player}}</h4>
         <div class="warningReady"></div>
         <form v-if="choosePlayer">
             <label>Choose Player:</label>
@@ -144,7 +150,7 @@ export default {
     attackArena(attack){
         if(attack.player === 'player1'){
             if(this.player === 'player1'){
-                this.showOne = true
+                this.showOne = true 
                 this.defenseShow = true //step3 giliran player1 siapkan defense
             }
               this.attack1 = attack.elementAttack
@@ -247,6 +253,14 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    border : solid;
+    border-radius : 30px
+}
+
+.fightarena{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .power1{
@@ -270,4 +284,39 @@ export default {
     height: 20px;
     background: red
 }
+
+img{
+    width: 100px;
+    height: 100px
+}
+
+.modeAttack{
+    font-size: 30px;
+    color: red;
+    font-weight: bold;
+}
+
+.modeDefense{
+    font-size: 25px;
+    color: blue
+}
+
+form{
+    font-size: 20px;
+    color: blue
+}
+
+button{
+    width: 100px;
+    height: 30px;
+    background-color: grey;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.attackicon{
+    margin-top: 50px
+}
+
+
 </style>
