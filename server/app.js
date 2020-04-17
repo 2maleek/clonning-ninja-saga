@@ -35,7 +35,10 @@ io.on('connection', (socket) => {
             updateRoomData(socket.room);
         }
     });
-
+    socket.on('msgPlayer', function(msg){
+        console.log(msg,"...player")
+        socket.broadcast.emit('msgPlayer', msg)
+    });
     socket.on('get rooms', () => {
         let validrooms = rooms.map(room => {
             return {
@@ -134,7 +137,8 @@ function joinRoom(socket, roomId) {
                     success: true,
                     room: socket.room,
                     message: 'join room successful',
-                })                
+								})
+								socket.room.status = 'Full'
                 console.log(`${socket.name} joined room ${socket.room.name}`);
                 updateRoomData(socket.room);
             } else {
@@ -183,8 +187,8 @@ function getLastRoomId() {
 }
 
 function updateRoomData(room) {
-    let {id, name, players} = room;
-    let viewableRoomData = {id, name, players};
+    let {id, name, players, status} = room;
+    let viewableRoomData = {id, name, players, status};
     io.to(`room-${id}`).emit('update room data', viewableRoomData);
 }
 

@@ -59,13 +59,11 @@ export default {
       this.roomList.push(room);
     },
 
-    "delete room"(room) {
-      this.roomList = this.roomList.filter(roomItem => {
-        return roomItem.id !== room.id
-      })
+    'delete room': function (room) {
+      this.roomList = this.roomList.filter((roomItem) => roomItem.id !== room.id);
     },
-    "other player join room"(player) {
-      console.log(player.name + " joined the room")
+    'other player join room': function (player) {
+      console.log(`${player.name} joined the room`);
     },
     'other player leave room': function (player) {
       console.log(`${player.name} leave the room`);

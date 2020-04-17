@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Home 
+    <Home
     v-if="!statusGame"
     @startGame="startGame"
     ></Home>
@@ -23,13 +23,13 @@ export default {
   },
   methods: {
     startGame() {
-      console.log('masuk ke game')
-      this.statusGame = true
+      console.log('masuk ke game');
+      this.statusGame = true;
     },
   },
   components: {
     Home,
-    // RoomTest,  
+    // RoomTest,
     Gameboard,
   },
 };

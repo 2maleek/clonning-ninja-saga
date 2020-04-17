@@ -9,7 +9,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(new VueSocketIO({
-  connection: 'http://localhost:3000',
+  connection: 'https://dry-mountain-46610.herokuapp.com',
 }));
 
 Vue.config.productionTip = false;
