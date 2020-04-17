@@ -1,8 +1,11 @@
 <template>
   <div id="app">
-    <Home></Home>
-    <RoomTest></RoomTest>
-    <Gameboard></Gameboard>/>
+    <Home 
+    v-if="!statusGame"
+    @startGame="startGame"
+    ></Home>
+    <!-- <RoomTest></RoomTest> -->
+    <Gameboard v-if="statusGame"></Gameboard>
   </div>
 </template>
 
@@ -15,12 +18,18 @@ export default {
   name: 'App',
   data() {
     return {
-      enter: null,
-    }
+      statusGame: false,
+    };
+  },
+  methods: {
+    startGame() {
+      console.log('masuk ke game')
+      this.statusGame = true
+    },
   },
   components: {
     Home,
-    RoomTest,
+    // RoomTest,  
     Gameboard,
   },
 };
