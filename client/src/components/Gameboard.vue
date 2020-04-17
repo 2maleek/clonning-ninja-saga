@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h1>TITLE: "CLONNING NINJA SAGA</h1>
-    <div>You are : {{player}}</div>
+    <h1>"CLONING NINJA SAGA"</h1>
     <div class="arena">
         <div>
             <h3>Player 1</h3>
-            <div class="modeAttack" v-if="showOne">{{attack1}} $$$$$===</div>
-            <div class="modeDefense" v-if="showTwo">{{defense1}}</div>
-            <div class="avatar">
-                <img src="../assets/pl1.png">
+            <div class="fightarena">
+                <div class="avatar"></div>
+                    <img src="../assets/player1.gif" />
+                <div class="modeAttack" v-if="showOne">{{attack1}} </div>
+                <div class="modeDefense" v-if="showTwo">{{defense1}}</div>
             </div>
             <div class="power1">Power1: {{power1}}
                 <div v-bind:style="{width: power1+'%'}"></div>
@@ -21,15 +21,28 @@
         </div>
         <div class="winnerwarning" v-if="winnerShow">
                 <h3>{{winner}} is the WINNER</h3>
-                <button @click="playagain">Play Again?</button>
+                <button @click="playagain">Reset</button>
+        </div>
+        <div class="attackicon">
+            <div v-if="showOne"><img src="../assets/showOne.gif" /></div>
+            <div v-if="showTwo"><img src="../assets/showTwo.gif" /></div>
         </div>
         <div>
             <h3>Player 2</h3>
+<<<<<<< HEAD
             <div class="modeAttack" v-if="showTwo"> ====$$$$ {{attack2}}</div>
             <div class="modeDefense" v-if="showOne">{{defense2}}</div>
 
             <div class="avatar">
                 <img src="../assets/pl2.png">
+=======
+            <div class="fightarena">
+                <div class="modeAttack" v-if="showTwo"> {{attack2}}</div>
+                <div class="modeDefense" v-if="showOne">{{defense2}}</div>               
+                <div class="avatar">
+                    <img src="../assets/player2.gif" />
+                </div>
+>>>>>>> 73c69cd54ffb15e10d6c0b5f9ccd2c6743a322ac
             </div>
             <div class="power2">Power2: {{power2}}
                 <div v-bind:style="{width: power2+'%'}"></div>
@@ -42,6 +55,7 @@
     </div>
     <div class="privateScreen">
         <h3>My Screen</h3>
+        <h4>You are : {{player}}</h4>
         <div class="warningReady"></div>
         <form v-if="choosePlayer">
             <label>Choose Player:</label>
@@ -144,11 +158,73 @@ export default {
       this.winner = winner;
       this.winnerShow = true;
     },
+<<<<<<< HEAD
     attackArena(attack) {
       if (attack.player === 'player1') {
         if (this.player === 'player1') {
           this.showOne = true;
           this.defenseShow = true; // step3 giliran player1 siapkan defense
+=======
+    attackArena(attack){
+        if(attack.player === 'player1'){
+            if(this.player === 'player1'){
+                this.showOne = true 
+                this.defenseShow = true //step3 giliran player1 siapkan defense
+            }
+              this.attack1 = attack.elementAttack
+              console.log(this.attack1, "......attack1")
+              this.power2 =this.power2- fighting(this.defense2, this.attack1)
+              console.log(this.power2, "......power2")
+              if(this.power2<=0){
+                  this.power2=0
+                  this.showWinner('player1')
+              }
+          } else {
+             if(this.player === 'player2'){
+                this.showTwo = true
+                this.defenseShow = true //one cycle - mulai step1
+            }
+              this.attack2 = attack.elementAttack
+              console.log(this.attack2, "......attack2")
+              this.power1 =this.power1- fighting(this.defense1, this.attack2)
+              console.log(this.power1, "......power1")
+              if(this.power1<=0){
+                  this.power1=0
+                  this.showWinner('player2')
+              }
+          }
+    },
+    defenseArena(defense){
+        if(defense.player === 'player1'){
+            if(this.player==='player2'){
+                this.attackShow = true //step4 player2 attack
+            }
+              console.log(defense.elementDefense,'pl1-defense')
+              this.defense1 = defense.elementDefense
+              console.log(this.defense1, 'defense1-----')
+          } else {
+            if(this.player==='player1'){
+                this.attackShow = true //step2 player1 attack
+            }
+              console.log('pl2-defense')
+              this.defense2 = defense.elementDefense
+              console.log(this.defense2, 'defense2-----')
+          }
+    },
+    sendAttack (event){
+        event.preventDefault();
+        this.attackShow = false
+        //mengisi attack sendiri
+        // if(this.player === 'player1'){
+        //     this.attack1 = this.elementAttack
+        // } else {
+        //     this.attack2 = this.elementAttack
+        // }
+        //menyiapkan message untuk socket
+        this.msgAttack = {
+            player: this.player,
+            elementAttack: this.elementAttack
+>>>>>>> 73c69cd54ffb15e10d6c0b5f9ccd2c6743a322ac
         }
         this.attack1 = attack.elementAttack;
         console.log(this.attack1, '......attack1');
@@ -250,6 +326,14 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    border : solid;
+    border-radius : 30px
+}
+
+.fightarena{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .power1{
@@ -273,4 +357,39 @@ export default {
     height: 20px;
     background: red
 }
+
+img{
+    width: 100px;
+    height: 100px
+}
+
+.modeAttack{
+    font-size: 30px;
+    color: red;
+    font-weight: bold;
+}
+
+.modeDefense{
+    font-size: 25px;
+    color: blue
+}
+
+form{
+    font-size: 20px;
+    color: blue
+}
+
+button{
+    width: 100px;
+    height: 30px;
+    background-color: grey;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.attackicon{
+    margin-top: 50px
+}
+
+
 </style>
