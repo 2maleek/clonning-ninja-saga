@@ -35,12 +35,16 @@ io.on('connection', (socket) => {
             updateRoomData(socket.room);
         }
     });
-
+    socket.on('msgPlayer', function(msg){
+        console.log(msg,"...player")
+        socket.broadcast.emit('msgPlayer', msg)
+    });
     socket.on('get rooms', () => {
         let validrooms = rooms.map(room => {
             return {
                 id: room.id,
-                name: room.name,
+								name: room.name,
+								status: room.status,
             }
         });
         socket.emit('get rooms', validrooms);
@@ -87,6 +91,27 @@ io.on('connection', (socket) => {
             });
         }
     });
+
+    socket.on('msgAttack', function(msg){
+        console.log(msg, "attack")
+        io.emit('msgAttack', msg) //ke semua
+        //socket.broadcast.emit('msgAttack', msg) //ke semua kecuali diri sendiri
+		});
+		socket.on('msgDefense', function(msg){
+			console.log(msg, "defense")
+			io.emit('msgDefense', msg) //ke semua
+			//socket.broadcast.emit('msgDefense', msg) //ke semua kecuali diri sendiri
+		});
+		socket.on('msgReset', function(msg){
+				console.log(msg, "...reset")
+				io.emit('msgReset',msg)
+		});
+
+		socket.on('start game', () => {
+			console.log('starting game...')
+			io.emit('start game', {message: 'starting game'})
+		});
+
 });
 
 function joinRoom(socket, roomId) {
@@ -111,8 +136,9 @@ function joinRoom(socket, roomId) {
                 socket.emit('join room', {
                     success: true,
                     room: socket.room,
-                    message: 'join room successful'
-                })                
+                    message: 'join room successful',
+								})
+								socket.room.status = 'Full'
                 console.log(`${socket.name} joined room ${socket.room.name}`);
                 updateRoomData(socket.room);
             } else {
@@ -140,7 +166,8 @@ function createNewRoom(name, gameMasterSocketId) {
     let newRoomData = {
         id: newRoomId,
         name: name,
-        gameMaster: gameMasterSocketId,
+				gameMaster: gameMasterSocketId,
+				status: 'Waiting',
         players: {}
     };
     rooms.push(newRoomData);
@@ -160,8 +187,8 @@ function getLastRoomId() {
 }
 
 function updateRoomData(room) {
-    let {id, name, players} = room;
-    let viewableRoomData = {id, name, players};
+    let {id, name, players, status} = room;
+    let viewableRoomData = {id, name, players, status};
     io.to(`room-${id}`).emit('update room data', viewableRoomData);
 }
 
