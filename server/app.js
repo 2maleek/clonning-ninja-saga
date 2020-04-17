@@ -40,7 +40,8 @@ io.on('connection', (socket) => {
         let validrooms = rooms.map(room => {
             return {
                 id: room.id,
-                name: room.name,
+								name: room.name,
+								status: room.status,
             }
         });
         socket.emit('get rooms', validrooms);
@@ -132,7 +133,7 @@ function joinRoom(socket, roomId) {
                 socket.emit('join room', {
                     success: true,
                     room: socket.room,
-                    message: 'join room successful'
+                    message: 'join room successful',
                 })                
                 console.log(`${socket.name} joined room ${socket.room.name}`);
                 updateRoomData(socket.room);
@@ -161,7 +162,8 @@ function createNewRoom(name, gameMasterSocketId) {
     let newRoomData = {
         id: newRoomId,
         name: name,
-        gameMaster: gameMasterSocketId,
+				gameMaster: gameMasterSocketId,
+				status: 'Waiting',
         players: {}
     };
     rooms.push(newRoomData);

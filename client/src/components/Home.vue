@@ -1,6 +1,6 @@
 <template>
   <div id="home" class="container-fluid">
-    <div class="d-flex justify-content-center align item align-items-center" v-if="page === 'enterName'">
+    <div class="d-flex justify-content-center align-items-center" v-if="page === 'enterName'">
       <section class="snow-bg"></section>
       <div>
         <h1  class="text-center" style="font-family: 'Long Cang', cursive;  font-size: 60px; font-weight: bolder; margin-top: 20vh; ">Clonning Ninja Saga </h1>
@@ -24,25 +24,30 @@
       </div>
     </div>
     <div id="afterEnter" v-if="page === 'searchRoom'">
-      <b-form inline class="d-flex justify-content-center"  @submit.prevent="createRoom(inputRoomName)">
-        <label class="sr-only" for="name">Room name</label>
-        <b-input
-          v-model="inputRoomName"
-          id="name"
-          class="mb-2 mr-sm-2 mb-sm-0"
-          placeholder="Enter room name"
-        ></b-input>
+      <div class="d-flex justify-content-center">
+          <b-form inline class="d-flex justify-content-center"  @submit.prevent="createRoom(inputRoomName)">
+          <label class="sr-only" for="name">Room name</label>
+          <b-input
+            v-model="inputRoomName"
+            id="name"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            placeholder="Enter room name"
+          ></b-input>
 
-        <b-button type="submit" variant="primary">Create</b-button>
-      </b-form>
-      <div class="container-fluid mt-5">
-        <h3 class="text-center">List Room</h3>
-        <div class="row">
-          <div class="col-md-3" v-for="room in roomList" :key="room.id">
-            <b-card bg-variant="primary" text-variant="white" header="Primary" class="text-center">
-              <b-card-text>{{room.name}}</b-card-text>
-              <button @click.prevent="joinRoom(room.id)">Join</button>
-            </b-card>
+          <b-button type="submit" variant="primary">Create</b-button>
+        </b-form>
+        </div>
+      <div>
+        
+        <div class="container-fluid mt-5">
+          <h3 class="text-center">List Room</h3>
+          <div class="row">
+            <div class="col-md-4  " v-for="room in roomList" :key="room.id">
+              <b-card bg-variant="primary" text-variant="white" header="Room" class="text-center">
+                <b-card-text>{{room.name}}</b-card-text>
+                <button class="btn btn-warning" @click.prevent="joinRoom(room.id)">Join</button>
+              </b-card>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +69,7 @@
         </div>
         <div class="row">
           <div class="col-6" v-for="(player, playerId, index) in currentRoom.players" :key="index">
-            <h2 class="text-center"> {{player.name}} </h2>
+            <h2 class="text-center"> {{player.name}}</h2>
             <img class="text-center" src="../assets/prepare.gif" width="50%" alt="gambarnya gerak gerak">
           </div>
         </div>
@@ -84,6 +89,7 @@ export default {
       currentRoom: null,
       roomList: [],
       page: 'enterName',
+
     };
   },
   sockets: {
@@ -106,6 +112,12 @@ export default {
     'new room': function (room) {
       this.roomList.push(room);
     },
+
+    "delete room"(room) {
+      this.roomList = this.roomList.filter(roomItem => {
+        return roomItem.id !== room.id
+      })
+    },
     'other player join room': function (player) {
       console.log(`${player.name} joined the room`);
     },
@@ -127,6 +139,9 @@ export default {
     'start game': function (data) {
       console.log(data)
       this.$emit('startGame')
+    },
+    'status room': function (status) {
+      return status;
     }
   },
   methods: {
@@ -150,11 +165,16 @@ export default {
       this.$socket.emit('start game')
     },
   },
+  computed: {
+    checkStatus(status) {
+      return status
+    }
+  }
 };
 </script>
 
 <style scoped>
-  #home {
+  #home, html {
     height: 100vh;
     background-color: darkolivegreen;
   }
