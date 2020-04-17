@@ -12,7 +12,7 @@ import Gameboard from './components/Gameboard.vue';
 export default {
   name: 'App',
   components: {
-    RoomTest
+    RoomTest,
     Gameboard,
   },
 };
