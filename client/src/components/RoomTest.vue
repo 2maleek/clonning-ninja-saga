@@ -29,64 +29,64 @@
 
 <script>
 export default {
-  name: "RoomTest",
+  name: 'RoomTest',
   data() {
     return {
       name: '',
       inputName: null,
       inputRoomName: null,
       currentRoom: null,
-      roomList: []
-    }
+      roomList: [],
+    };
   },
   sockets: {
     connect() {
-      this.$socket.emit("get rooms")
+      this.$socket.emit('get rooms');
     },
-    "update room data"(room) {
-      this.currentRoom = room
+    'update room data': function (room) {
+      this.currentRoom = room;
     },
-    "set name"(data) {
-      console.log(data)
-      if(data.success) {
-        this.name = data.name
-      }
-    },
-    "get rooms"(rooms) {
-      this.roomList = rooms
-    },
-    "new room"(room) {
-      this.roomList.push(room)
-    },
-    "other player join room"(player) {
-      console.log(player.name + " joined the room")
-    },
-    "other player leave room"(player) {
-      console.log(player.name + " leave the room")
-    },
-    "join room"(data) {
-      console.log(data)
-    },
-    "leave room"(data) {
-      console.log(data)
+    'set name': function (data) {
+      console.log(data);
       if (data.success) {
-        this.currentRoom = null
+        this.name = data.name;
       }
-    }
+    },
+    'get rooms': function (rooms) {
+      this.roomList = rooms;
+    },
+    'new room': function (room) {
+      this.roomList.push(room);
+    },
+    'other player join room': function (player) {
+      console.log(`${player.name} joined the room`);
+    },
+    'other player leave room': function (player) {
+      console.log(`${player.name} leave the room`);
+    },
+    'join room': function (data) {
+      console.log(data);
+    },
+    'leave room': function (data) {
+      console.log(data);
+      if (data.success) {
+        this.currentRoom = null;
+      }
+    },
   },
   methods: {
     setName(name) {
-      this.$socket.emit("set name", name)
+      this.$socket.emit('set name', name);
     },
     joinRoom(roomId) {
-      this.$socket.emit("join room", roomId)
+      this.$socket.emit('join room', roomId);
     },
     createRoom(roomId) {
-      this.$socket.emit("create room", roomId)
+      this.$socket.emit('create room', roomId);
     },
     leaveRoom() {
-      this.$socket.emit("leave room")
-    }
-  }
-}
+      this.$socket.emit('leave room');
+    },
+  },
+};
 </script>

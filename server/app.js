@@ -102,7 +102,8 @@ io.on('connection', (socket) => {
 		socket.on('start game', () => {
 			console.log('starting game...')
 			io.emit('start game', {message: 'starting game'})
-		})
+		});
+
 });
 
 function joinRoom(socket, roomId) {
