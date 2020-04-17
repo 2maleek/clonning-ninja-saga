@@ -83,6 +83,26 @@ io.on('connection', (socket) => {
             });
         }
     });
+
+    socket.on('msgAttack', function(msg){
+        console.log(msg, "attack")
+        io.emit('msgAttack', msg) //ke semua
+        //socket.broadcast.emit('msgAttack', msg) //ke semua kecuali diri sendiri
+		});
+		socket.on('msgDefense', function(msg){
+			console.log(msg, "defense")
+			io.emit('msgDefense', msg) //ke semua
+			//socket.broadcast.emit('msgDefense', msg) //ke semua kecuali diri sendiri
+		});
+		socket.on('msgReset', function(msg){
+				console.log(msg, "...reset")
+				io.emit('msgReset',msg)
+		});
+
+		socket.on('start game', () => {
+			console.log('starting game...')
+			io.emit('start game', {message: 'starting game'})
+		})
 });
 
 function joinRoom(socket, roomId) {
