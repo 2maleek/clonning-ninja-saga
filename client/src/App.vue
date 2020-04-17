@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <Home></Home>
-    <RoomTest v-if="enter"></RoomTest>
+    <RoomTest></RoomTest>
+    <Gameboard></Gameboard>/>
   </div>
 </template>
 
 <script>
 import RoomTest from './components/RoomTest.vue';
 import Home from './components/Home.vue';
+import Gameboard from './components/Gameboard.vue';
 
 export default {
   name: 'App',
@@ -19,7 +21,8 @@ export default {
   components: {
     Home,
     RoomTest,
-  }
+    Gameboard,
+  },
 };
 </script>
 
@@ -27,12 +30,5 @@ export default {
 body{
  height: 100vh;
 }
-/* #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
+
 </style>
